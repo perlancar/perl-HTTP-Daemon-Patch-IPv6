@@ -8,23 +8,8 @@ use parent qw(Module::Patch);
 
 # VERSION
 
-sub patch_data {
-    return {
-        versions => {
-            '6.01' => {
-                subs => {
-                    url => $HTTP::Daemon::p_url,
-                },
-            },
-        },
-    };
-}
-
-package HTTP::Daemon;
-require HTTP::Daemon;
-no strict;
-no warnings;
-our $p_url = sub {
+use IO::Socket qw(AF_INET INADDR_ANY INADDR_LOOPBACK inet_ntoa);
+my $p_url = sub {
     my $orig = shift;
 
     my $self = shift;
@@ -45,6 +30,18 @@ our $p_url = sub {
     $url .= "/";
     $url;
 };
+
+sub patch_data {
+    return {
+        versions => {
+            '6.01' => {
+                subs => {
+                    url => $p_url,
+                },
+            },
+        },
+    };
+}
 
 1;
 # ABSTRACT: Patch module for HTTP::Daemon
