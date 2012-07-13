@@ -48,7 +48,6 @@ sub patch_data {
 
 =head1 SYNOPSIS
 
- use HTTP::Daemon;
  use HTTP::Daemon::patch::ipv6;
 
 
