@@ -4,12 +4,14 @@ use 5.010001;
 use strict;
 no warnings;
 
-use parent qw(Module::Patch);
+use Module::Patch 0.07 qw();
+use base qw(Module::Patch);
 
 # VERSION
 
 use IO::Socket qw(AF_INET INADDR_ANY INADDR_LOOPBACK inet_ntoa);
 my $p_url = sub {
+    my $ctx  = shift;
     my $orig = shift;
 
     my $self = shift;
@@ -33,13 +35,15 @@ my $p_url = sub {
 
 sub patch_data {
     return {
-        versions => {
-            '6.01' => {
-                subs => {
-                    url => $p_url,
-                },
+        v => 2,
+        patches => [
+            {
+                action => 'wrap',
+                mod_version => qr/^6\.0.+/,
+                sub_name => 'url',
+                code => $p_url,
             },
-        },
+        ],
     };
 }
 
