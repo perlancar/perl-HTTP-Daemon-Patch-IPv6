@@ -9,7 +9,7 @@ use base qw(Module::Patch);
 
 # VERSION
 
-use IO::Socket qw(AF_INET INADDR_ANY INADDR_LOOPBACK inet_ntoa);
+use IO::Socket qw(AF_INET INADDR_ANY INADDR_LOOPBACK inet_ntop);
 my $p_url = sub {
     my $ctx  = shift;
     my $orig = $ctx->{orig};
@@ -25,7 +25,7 @@ my $p_url = sub {
         $url .= inet_ntoa($addr);
     }
     else {
-        $url .= gethostbyaddr($addr, AF_INET) || inet_ntoa($addr);
+        $url .= gethostbyaddr($addr, AF_INET) || inet_ntop(AF_INET,$addr);
     }
     my $port = $self->sockport;
     $url .= ":$port" if $port != $self->_default_port;
